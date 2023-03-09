@@ -1,17 +1,18 @@
 import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import axios from "axios";
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService , private config : ConfigService) { }
   async Auth(code: string) {
     const payload = {
-      grant_type: "authorization_code",
-      client_id: 'af6ee2092070d65383c01524be873ff60db72f8db7a5a806ccc6bfb4d7154ff7',
-      client_secret: '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',
+      grant_type: this.config.get('GRANT_TYPE'),
+      client_id: this.config.get('CLIENT_ID'),
+      client_secret: this.config.get('CLIENT_SECRET'),
       code: code,
-      redirect_uri: 'http://localhost:8080/auth/token',
+      redirect_uri:  this.config.get('REDIRECT_URI'),
     }
     try {
       const rest = await axios.post("https://api.intra.42.fr/oauth/token", payload);
@@ -22,8 +23,6 @@ export class AuthService {
       });
       const { email, login, first_name, last_name, image } = res.data;
       const { link } = image;
-      // return { email, login, first_name, last_name, link };
-      // return res.data
       const user = await this.prisma.user.findUnique({
         where: { email: email }
       })
