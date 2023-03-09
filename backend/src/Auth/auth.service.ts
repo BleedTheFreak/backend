@@ -6,14 +6,14 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private config: ConfigService) { }
+  constructor(private prisma: PrismaService , private config : ConfigService) { }
   async Auth(code: string) {
     const payload = {
       grant_type: this.config.get('GRANT_TYPE'),
       client_id: this.config.get('CLIENT_ID'),
       client_secret: this.config.get('CLIENT_SECRET'),
       code: code,
-      redirect_uri: this.config.get('REDIRECT_URI'),
+      redirect_uri:  this.config.get('REDIRECT_URI'),
     }
     try {
       const rest = await axios.post("https://api.intra.42.fr/oauth/token", payload);
@@ -43,9 +43,9 @@ export class AuthService {
       return { code: 200, message: "User created" }
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          return { code: 400, message: error.message }
-        }
+        if (error.code === 'P2002') 
+          return { code: 400, message: "User already exists" }
       }
     }
   }
+}
