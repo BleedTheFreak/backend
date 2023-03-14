@@ -1,0 +1,35 @@
+version: '3.8'
+
+networks:
+ ft_transcendence-network:
+
+services:
+  postgres:
+    image: postgres
+    env_file:
+      - .env
+    networks:
+      - ft_transcendence-network
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - ft_transcendence-network
+    depends_on:
+      - backend
+      - frontend
+  backend:
+    build: ./backend
+    ports:
+      - 5555:5555
+    networks:
+      - ft_transcendence-network
+    depends_on:
+      - postgres
+  frontend:
+    build: ./frontend
+    networks:
+      - ft_transcendence-network

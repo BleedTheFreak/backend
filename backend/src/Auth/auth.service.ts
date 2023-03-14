@@ -88,14 +88,4 @@ export class AuthService {
     return { access_tokens: token };
   }
 
-  // async verifyToken(token: { access_tokens: string }) {
-  //   try {
-  //     const payload = await this.jwt.verifyAsync(token.access_tokens, {
-  //       secret: this.config.get('JWT_SECRET')
-  //     });
-  //     return payload;
-  //   } catch (error) {
-  //     throw new ForbiddenException("Invalid Token");
-  //   }
-  // }
 }
